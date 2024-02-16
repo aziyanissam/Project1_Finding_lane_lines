@@ -4,6 +4,7 @@ import numpy as np #np is called as alias and for Numerical operations
 
 
 #Function to return edge detected Image
+#Function Canny take an image called lane_image, and do Edge detection.
 def canny(lane_image):
     #Convereted to Grayscale image
     gray = cv2.cvtColor(lane_image, cv2.COLOR_RGB2GRAY)
@@ -13,7 +14,7 @@ def canny(lane_image):
     canny= cv2.Canny(blur,50,150)
     return canny
 
-    #Function Canny take an image called lane_image, and do Edge detection.
+
 
 #Function to return enclosed region
 def region_of_interest(image):
@@ -25,7 +26,9 @@ def region_of_interest(image):
     mask = np.zeros_like(image)
     #Fills defined polygon in the mask array with 255(Triangle polygon to white)
     cv2.fillPoly(mask,polygons,255)
-    return mask
+    # Use bitwise_and to mask the image(Cropping)
+    masked_image = cv2.bitwise_and(image, mask)
+    return masked_image
 
 
 #Loaded image to a variable image
@@ -37,33 +40,11 @@ lane_image = np.copy(image)
 #Calling function Canny
 canny = canny(lane_image)
 
+#Applying region_of_interest function to edge detedtec image(canny)
+cropped_image = region_of_interest(canny)
+
 #Shows image in a window called result
-cv2.imshow('result', region_of_interest(canny))
+cv2.imshow('result', cropped_image)
 
 #Displays untill a key is pressed
 cv2.waitKey(0)
-
-#Imported OpenCV and Numpy Libraries.
-#import cv2
-#import numpy as np
-
-#Loaded image to a variable image
-#image = cv2.imread('Image/test_image.jpg')
-
-#Created a copy of image.
-#lane_image = np.copy(image)
-
-#Convereted to Grayscale image
-#gray = cv2.cvtColor(lane_image, cv2.COLOR_RGB2GRAY)
-
-#Smoothened and recuded noise using 5*5 Kernel
-#blur = cv2.GaussianBlur(gray,(5,5),0)
-
-#Edge detecting using Canny detector.
-#canny= cv2.Canny(blur,50,150)
-
-#Shows image in a window called result
-#cv2.imshow('result', canny)
-
-#Displays untill a key is pressed
-#cv2.waitKey(0)
